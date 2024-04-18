@@ -17,7 +17,7 @@ ToDo list is a simple web application to save your daily tasks in order not to m
 
 ## Start Project
 ```sh
-git clone https://github.com/hasanugr/react-firebase-todoList.git
+git clone https://github.com/Ashuthosh-Reddy/Todo-List-App
 ```
 ```sh
 cd react-firebase-todoList
