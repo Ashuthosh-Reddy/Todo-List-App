@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AppBar,
   Button,
@@ -146,7 +146,7 @@ const styles = makeStyles((theme) => ({
 
 function useTodoLists(currentUserId) {
   const [todoLists, setTodoLists] = React.useState([]);
-  
+
   useEffect(() => {
     firebase
       .firestore()
@@ -167,7 +167,7 @@ function useTodoLists(currentUserId) {
 
 function HomePage(props) {
   const classes = styles();
-  
+
   const currentUserName = firebase.auth().currentUser && firebase.auth().currentUser.displayName;
   if (!currentUserName) {
     // not logged in
@@ -175,11 +175,11 @@ function HomePage(props) {
     props.history.replace('/')
     return null
   }
-  
+
   const currentUserId = firebase.auth().currentUser.uid;
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const todoLists = useTodoLists(currentUserId);
-  
+
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [todoListsOpen, setTodoListsOpen] = useState(true);
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -196,7 +196,7 @@ function HomePage(props) {
   const [showNewListDialog, setShowNewListDialog] = useState(false);
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [selectNewAddedList, setSelectNewAddedList] = useState('');
-  
+
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     // firebase.getCurrentUserQuote().then(setQuote)
@@ -206,7 +206,7 @@ function HomePage(props) {
     if (!selectedList) {
       handleListItemClick(todoLists[0], 0);
     }
-    
+
     console.log('------ Select New Added List ------');
     console.log(selectNewAddedList);
     if (selectNewAddedList !== '') {
@@ -218,35 +218,35 @@ function HomePage(props) {
       })
     }
   })
-  
+
   const handleListItemClick = (list, index) => {
     setSelectedIndex(index);
     setSelectedList(list);
   };
-  
+
   async function logout() {
     // await firebase.logout()
     await firebase.auth().signOut();
     props.history.push('/')
   }
-  
+
   const addTodoList = () => {
     console.log('addTodoList');
     setShowNewListDialog(true);
   }
-  
+
   const openEditTodoDialog = (list, index) => {
     console.log('openEditTodoDialog --> ' + index);
     console.log(list);
     setSelectedListEditItemIndex(index)
     setShowEditTodoDialog(true);
   }
-  
+
   const openNewTodoDialog = () => {
     console.log('openNewTodoDialog');
     setShowNewTodoDialog(true);
   }
-  
+
   const updateTodoList = (list) => {
     firebase
       .firestore()
@@ -260,22 +260,22 @@ function HomePage(props) {
         console.log(e)
       });
   }
-  
+
   const saveEditTodo = (title, detail, date) => {
     console.log('saveEditTodo');
     if (title !== '' && detail !== '') {
       selectedList.todoList[selectedListEditItemIndex].name = title;
       selectedList.todoList[selectedListEditItemIndex].detail = detail;
       selectedList.todoList[selectedListEditItemIndex].date = new Date(date).getTime();
-      
+
       updateTodoList(selectedList);
       setShowEditTodoDialog(false);
       setSelectedListEditItemIndex(3.14);
     } else {
-      alert('Lütfen formu tekrar kontrol ediniz, ve eksik alan kalmadığından emin olunuz.');
+      alert('Please check the form again and make sure there are no missing fields.');
     }
   }
-  
+
   const saveNewTodo = (title, detail, date) => {
     console.log('saveNewTodo');
     if (title !== '' && detail !== '') {
@@ -287,14 +287,14 @@ function HomePage(props) {
         createDate: new Date().getTime()
       });
       console.log(selectedList);
-      
+
       updateTodoList(selectedList);
       setShowNewTodoDialog(false);
     } else {
-      alert('Lütfen formu tekrar kontrol ediniz, ve eksik alan kalmadığından emin olunuz.');
+      alert('Please check the form again and make sure there are no missing fields.');
     }
   }
-  
+
   const saveNewTodoList = (title) => {
     console.log('saveNewTodo');
     if (title !== '') {
@@ -309,15 +309,15 @@ function HomePage(props) {
           setSelectNewAddedList(doc.id);
           setShowNewListDialog(false);
         })
-      
+
     } else {
-      alert('Lütfen formu tekrar kontrol ediniz, ve eksik alan kalmadığından emin olunuz.');
+      alert('Please check the form again and make sure there are no missing fields.');
     }
   }
-  
+
   const removeTodoList = (event, list, index) => {
     event.stopPropagation();
-    
+
     firebase
       .firestore()
       .collection(currentUserId)
@@ -329,7 +329,7 @@ function HomePage(props) {
         }
       })
   }
-  
+
   function renderEditDialog() {
     console.log('renderEditDialog');
     console.log(selectedList);
@@ -338,15 +338,15 @@ function HomePage(props) {
       let date = calculateFullDate(editItem.date);
       let title = editItem.name;
       let detail = editItem.detail;
-      
+
       console.log(editItem);
-      
+
       return (
         <Dialog open={showEditTodoDialog} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">Düzenle</DialogTitle>
+          <DialogTitle id="form-dialog-title">Edit</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Todo Item bilgilerini buradan düzenleyebilirsiniz.
+              You can edit Todo Item information here.
             </DialogContentText>
             <TextField
               autoFocus
@@ -354,7 +354,7 @@ function HomePage(props) {
               onChange={(event) => title = event.target.value}
               margin="dense"
               id="todo-title"
-              label="Todo Başlığı"
+              label="Todo List Title"
               type="text"
               fullWidth
             />
@@ -364,7 +364,7 @@ function HomePage(props) {
               onChange={(event) => detail = event.target.value}
               margin="dense"
               id="todo-detail"
-              label="Todo Detayı"
+              label="Todo Description"
               type="text"
               fullWidth
             />
@@ -386,10 +386,10 @@ function HomePage(props) {
               setShowEditTodoDialog(false);
               setSelectedListEditItemIndex(3.14);
             }} color="primary">
-              Kapat
+              Exit
             </Button>
             <Button onClick={() => saveEditTodo(title, detail, date)} color="primary">
-              Kaydet
+              Add
             </Button>
           </DialogActions>
         </Dialog>
@@ -398,19 +398,19 @@ function HomePage(props) {
       return (<div></div>)
     }
   }
-  
+
   function renderNewTodoDialog() {
     console.log('renderNewTodoDialog');
     let date = calculateFullDate(new Date().getTime());
     let title = '';
     let detail = '';
-    
+
     return (
       <Dialog open={showNewTodoDialog} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Todo Item Ekle</DialogTitle>
+        <DialogTitle id="form-dialog-title">Add Todo List</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Todo Item eklemek için gerekli bilgileri girerek KAYDET'e basınız.
+            To add a Todo Item, enter the required information and press SAVE.
           </DialogContentText>
           <TextField
             autoFocus
@@ -418,7 +418,7 @@ function HomePage(props) {
             onChange={(event) => title = event.target.value}
             margin="dense"
             id="todo-title"
-            label="Todo Başlığı"
+            label="Todo Title"
             type="text"
             fullWidth
           />
@@ -428,7 +428,7 @@ function HomePage(props) {
             onChange={(event) => detail = event.target.value}
             margin="dense"
             id="todo-detail"
-            label="Todo Detayı"
+            label="Todo Description"
             type="text"
             fullWidth
           />
@@ -436,7 +436,7 @@ function HomePage(props) {
             defaultValue={date}
             onChange={(event) => date = event.target.value}
             id="todo-datetime"
-            label="Son Tarih"
+            label="Date Time"
             type="datetime-local"
             // defaultValue="2020-05-16T18:30"
             className={classes.textField}
@@ -447,26 +447,26 @@ function HomePage(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowNewTodoDialog(false)} color="primary">
-            Kapat
+            Exit
           </Button>
           <Button onClick={() => saveNewTodo(title, detail, date)} color="primary">
-            Kaydet
+            Save
           </Button>
         </DialogActions>
       </Dialog>
     )
   }
-  
+
   function renderNewListDialog() {
     console.log('renderNewListDialog');
     let title = '';
-    
+
     return (
       <Dialog open={showNewListDialog} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Todo List Ekle</DialogTitle>
+        <DialogTitle id="form-dialog-title">Add Todo List</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Todo List başlığını girerek Kaydet'e basınız.
+            Enter the Todo List title and click Save.
           </DialogContentText>
           <TextField
             autoFocus
@@ -474,35 +474,35 @@ function HomePage(props) {
             onChange={(event) => title = event.target.value}
             margin="dense"
             id="todo-title"
-            label="Todo List Başlığı"
+            label="Todo List List Title"
             type="text"
             fullWidth
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowNewListDialog(false)} color="primary">
-            Kapat
+            Exit
           </Button>
           <Button onClick={() => saveNewTodoList(title)} color="primary">
-            Ekle
+            Add
           </Button>
         </DialogActions>
       </Dialog>
     )
   }
-  
+
   function renderLists() {
     if (todoLists.length > 0) {
       return todoLists.map((list, index) => {
         return (
           <ListItem button className={classes.nested} key={list.id}
-                    selected={selectedIndex === index}
-                    onClick={() => handleListItemClick(list, index)}>
-            <ListItemText style={{whiteSpace: 'initial'}} primary={list.name}/>
+            selected={selectedIndex === index}
+            onClick={() => handleListItemClick(list, index)}>
+            <ListItemText style={{ whiteSpace: 'initial' }} primary={list.name} />
             <IconButton aria-label="delete" className={classes.listRemoveButton} onClick={(event) => {
               removeTodoList(event, list, index);
             }}>
-              <DeleteIcon/>
+              <DeleteIcon />
             </IconButton>
           </ListItem>
         )
@@ -510,15 +510,15 @@ function HomePage(props) {
     } else {
       return (
         <div>
-          <span className={classes.emptyListText}>Kayıtlı bir Todo List bulunmamakta.</span>
+          <span className={classes.emptyListText}>There is no registered Todo List..</span>
         </div>
       )
     }
   }
-  
+
   return (
     <div className={classes.root}>
-      <CssBaseline/>
+      <CssBaseline />
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6" noWrap>
@@ -529,13 +529,13 @@ function HomePage(props) {
             color="secondary"
             className={classes.button}
             onClick={logout}
-            startIcon={<LogOutIcon/>}
+            startIcon={<LogOutIcon />}
           >
-            Çıkış Yap
+            Logout
           </Button>
         </Toolbar>
       </AppBar>
-      
+
       <Drawer
         className={classes.drawer}
         variant="permanent"
@@ -544,15 +544,15 @@ function HomePage(props) {
         }}
         open={true}
       >
-        <Toolbar/>
+        <Toolbar />
         <div className={classes.drawerContainer}>
           <List>
             <ListItem button onClick={() => setTodoListsOpen(!todoListsOpen)}>
               <ListItemIcon>
-                <AssignmentIcon/>
+                <AssignmentIcon />
               </ListItemIcon>
-              <ListItemText primary="Todo Listem"/>
-              {todoListsOpen ? <ExpandLess/> : <ExpandMore/>}
+              <ListItemText primary="Todo Listem" />
+              {todoListsOpen ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse in={todoListsOpen} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
@@ -564,24 +564,24 @@ function HomePage(props) {
                 size="small"
                 className={classes.addTodoListButton}
                 onClick={() => addTodoList()}
-                startIcon={<AddIcon/>}
-              >Todo List Ekle</Button>
+                startIcon={<AddIcon />}
+              >Add Todo List</Button>
             </Collapse>
-          
+
           </List>
         </div>
       </Drawer>
       <main className={classes.content}>
-        <div className={classes.appBarSpacer}/>
+        <div className={classes.appBarSpacer} />
         <TodoItemList list={selectedList ? selectedList : {}} updateTodoList={(list) => updateTodoList(list)}
-                      openEditDialog={(list, index) => openEditTodoDialog(list, index)}
-                      openNewTodoDialog={() => openNewTodoDialog()}/>
+          openEditDialog={(list, index) => openEditTodoDialog(list, index)}
+          openNewTodoDialog={() => openNewTodoDialog()} />
       </main>
-      
+
       {renderEditDialog()}
       {renderNewTodoDialog()}
       {renderNewListDialog()}
-    
+
     </div>
   );
 }

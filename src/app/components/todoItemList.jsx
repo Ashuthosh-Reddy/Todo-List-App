@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import {
   Checkbox,
   Container,
@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
   },
   filterArea: {
     marginBottom: 20,
-    
+
   },
   search: {
     position: 'relative',
@@ -126,15 +126,15 @@ function TodoItemList(props) {
   const classes = useStyles();
   let lists = props.list.todoList;
   let filteredLists;
-  
+
   const [searchText, setSearchText] = useState('');
-  
+
   if (props.list.id) {
     filteredLists = props.list.todoList.filter((list) => list.name.includes(searchText));
   } else {
     filteredLists = [];
   }
-  
+
   const twoDigitDateTextMaker = (time) => {
     let text = time.toString();
     if (text.toString().length > 1) {
@@ -143,7 +143,7 @@ function TodoItemList(props) {
       return '0' + text;
     }
   }
-  
+
   const calculateFullDate = (time) => {
     // Return Type -> DD.MM.YY  HH:MM
     const eventDate = new Date(time);
@@ -154,25 +154,25 @@ function TodoItemList(props) {
       clock: resClock
     };
   }
-  
+
   const editTodo = (event, list, index) => {
     event.stopPropagation();
     props.openEditDialog(list, index);
   }
-  
+
   const removeTodo = (event, list, index) => {
     event.stopPropagation();
     lists.splice(index, 1);
-    props.updateTodoList({name: props.list.name, todoList: lists});
+    props.updateTodoList({ name: props.list.name, todoList: lists });
   }
-  
+
   const checkboxToggle = (event, list) => {
     event.stopPropagation();
     list.isComplete = !list.isComplete;
-    props.updateTodoList({name: props.list.name, todoList: lists});
+    props.updateTodoList({ name: props.list.name, todoList: lists });
   }
-  
-  
+
+
   if (props.list.id) {
     return (
       <Container maxWidth="lg" className={classes.container}>
@@ -180,7 +180,7 @@ function TodoItemList(props) {
         <div className={classes.filterArea}>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
-              <SearchIcon/>
+              <SearchIcon />
             </div>
             <InputBase
               placeholder="Search…"
@@ -192,78 +192,77 @@ function TodoItemList(props) {
                 root: classes.inputRoot,
                 input: classes.inputInput,
               }}
-              inputProps={{'aria-label': 'search'}}
+              inputProps={{ 'aria-label': 'search' }}
             />
           </div>
         </div>
         {props.list.todoList.length > 0 &&
-        <div className={classes.root}>
-          {filteredLists.map((list, index) => {
-            const fullDate = calculateFullDate(list.date);
-            return (
-              <ExpansionPanel key={index}>
-                <ExpansionPanelSummary
-                  expandIcon={<ExpandMoreIcon/>}
-                  aria-label="Expand"
-                  aria-controls="additional-actions1-content"
-                  id="additional-actions1-header"
-                >
-                  <FormControlLabel
-                    className={classes.todoItemFormControl}
-                    aria-label="Acknowledge"
-                    onClick={(event) => {
-                      checkboxToggle(event, list);
-                    }}
-                    onFocus={(event) => event.stopPropagation()}
-                    control={<Checkbox checked={list.isComplete}/>}
-                    label={list.name}
-                  />
-                  <Typography className={classes.dateField}>
-                    <DateIcon className={classes.dateIcon} color="secondary"/>
-                    {fullDate.date}
-                    <br/>
-                    {fullDate.clock}
-                  </Typography>
-                  <IconButton aria-label="edit" className={classes.optionButtons} onClick={(event) => {
-                    editTodo(event, list, index);
-                  }}>
-                    <EditIcon/>
-                  </IconButton>
-                  <IconButton aria-label="delete" className={classes.optionButtons} onClick={(event) => {
-                    removeTodo(event, list, index);
-                  }}>
-                    <DeleteIcon/>
-                  </IconButton>
-                
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <Typography color="textSecondary">
-                    {list.detail}
-                  </Typography>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-            );
-          })}
-        </div>
+          <div className={classes.root}>
+            {filteredLists.map((list, index) => {
+              const fullDate = calculateFullDate(list.date);
+              return (
+                <ExpansionPanel key={index}>
+                  <ExpansionPanelSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-label="Expand"
+                    aria-controls="additional-actions1-content"
+                    id="additional-actions1-header"
+                  >
+                    <FormControlLabel
+                      className={classes.todoItemFormControl}
+                      aria-label="Acknowledge"
+                      onClick={(event) => {
+                        checkboxToggle(event, list);
+                      }}
+                      onFocus={(event) => event.stopPropagation()}
+                      control={<Checkbox checked={list.isComplete} />}
+                      label={list.name}
+                    />
+                    <Typography className={classes.dateField}>
+                      <DateIcon className={classes.dateIcon} color="secondary" />
+                      {fullDate.date}
+                      <br />
+                      {fullDate.clock}
+                    </Typography>
+                    <IconButton aria-label="edit" className={classes.optionButtons} onClick={(event) => {
+                      editTodo(event, list, index);
+                    }}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton aria-label="delete" className={classes.optionButtons} onClick={(event) => {
+                      removeTodo(event, list, index);
+                    }}>
+                      <DeleteIcon />
+                    </IconButton>
+
+                  </ExpansionPanelSummary>
+                  <ExpansionPanelDetails>
+                    <Typography color="textSecondary">
+                      {list.detail}
+                    </Typography>
+                  </ExpansionPanelDetails>
+                </ExpansionPanel>
+              );
+            })}
+          </div>
         }
         {props.list.todoList.length === 0 &&
-        <div>
-          <h5 style={{textAlign: 'center', padding: 25}}>Listenizde Todo Item bulunmamakta aşağıdaki buton ile yeni bir
-            Todo Item ekleyebilirsiniz.</h5>
-        </div>
+          <div>
+            <h5 style={{ textAlign: 'center', padding: 25 }}>If there is no Todo Item in your list, you can create a new one with the button below.
+              You can add Todo Item.</h5>
+          </div>
         }
         <IconButton aria-label="edit" className={classes.addTodoItemButton} onClick={(event) => {
           props.openNewTodoDialog();
         }}>
-          <AddCircleOutlineIcon className={classes.addTodoItemButtonIcon}/>
+          <AddCircleOutlineIcon className={classes.addTodoItemButtonIcon} />
         </IconButton>
       </Container>
     );
   } else {
     return (
       <div>
-        <h3 style={{textAlign: 'center', padding: 25}}>Kayıtlı bir Todo List bulunamadı, lütfen sol menüden ilk Todo
-          List'inizi ekleyin.</h3>
+        <h3 style={{ textAlign: 'center', padding: 25 }}>No saved Todo List was found, please select the first Todo list from the left menu.Add your List.</h3>
       </div>
     )
   }
